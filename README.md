@@ -21,7 +21,7 @@ Now you can call the script
 or if you prefer use cron to check and "automount" the share every X minute, see the example below
 
 	Run hourly cron jobs at 30 minutes after the hour:
-	30 * * * * /usr/bin/run-parts /etc/cron.hourly 1> /dev/null
+	30 * * * * /path/of/rc.nfs 1> /dev/null
 
 
 NOTE
