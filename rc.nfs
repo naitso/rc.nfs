@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# Mount NFS share
+#
+# Mounting NFS share if is up and running
+# This script is used to automount a D-LINK 323 nfs share on linux system
+
+
+##### CHANGE THIS VARIABLE #####
+
+# Enter the NAS IP address
+IP=192.168.0.11
+
+# Mount point
+MOUNT=/mnt/DNS
+
+# Shared directory to mount
+DIR=/mnt/HD_
+DIRA=a2
+DIRB=b2
+
+##### DO NOT CHANGE UNDER HERE #####
+
+# This port is chacked by netcat 'nc' tools
+PORT=nfs
+
+
+#check if host is already mounted
+if /bin/mount |grep -q "$IP"; then
+	# device mounted	
+	exit 0
+else
+
+#check if host is up with ip command
+#if ping -c 3 $IP >> /dev/null
+
+# use nc to check if host is up and nfs work
+if nc -z -w 2 $IP $PORT >> /dev/null
+then
+	for i in $DIRA $DIRB; do
+	if [ -e $i ]
+	then
+	#echo "il ping funziona"
+	/bin/mount -o nolock $IP:$DIR$i $MOUNT/$i
+	else
+		mkdir -p $MOUNT/$i
+		/bin/mount -o nolock $IP:$DIR$i $MOUNT/$i
+	fi
+	done
+	echo "NFS mounted"
+	exit 0
+else
+	#echo "il ping non va"
+	echo "NFS share is down"
+	exit 0
+fi
+fi
+# End mounting NFS share
+
